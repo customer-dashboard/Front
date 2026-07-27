@@ -1,0 +1,36 @@
+
+# Build output
+Client/dist/
+Server/dist/
+
+# Environment variables
+Client/.env
+Server/.env
+
+# Dependencies
+node_modules/
+Client/node_modules/
+Server/node_modules/
+
+# Environment Variables
+/Server/.env
+/Client/.env
+.env
+.env.local
+.env.*.local
+
+# Build Directories
+dist/
+dist-ssr/
+*.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Project-specific ignores
+Client/dist/
