@@ -1,0 +1,162 @@
+[
+  {
+    "_links": {
+      "self": "https://custlo.api.frontapp.com/channels/cha_o89uw",
+      "related": {
+        "inbox": "https://custlo.api.frontapp.com/inboxes/inb_lrgx4",
+        "owner": "https://custlo.api.frontapp.com/teams/tim_9lsrs"
+      }
+    },
+    "id": "cha_o89uw",
+    "name": "support",
+    "address": "support@custlo.com",
+    "send_as": "support@custlo.com",
+    "type": "gmail",
+    "settings": {
+      "undo_send_time": 10,
+      "all_teammates_can_reply": false
+    },
+    "is_private": false,
+    "is_valid": true
+  },
+  {
+    "_links": {
+      "self": "https://custlo.api.frontapp.com/channels/cha_o8bzc",
+      "related": {
+        "inbox": "https://custlo.api.frontapp.com/inboxes/inb_lrgx4",
+        "owner": "https://custlo.api.frontapp.com/teams/tim_9lsrs"
+      }
+    },
+    "id": "cha_o8bzc",
+    "name": "Custlo Live chat",
+    "address": "00246dbabf87ef9c975a",
+    "send_as": "00246dbabf87ef9c975a",
+    "type": "front_chat",
+    "settings": {
+      "undo_send_time": 0,
+      "all_teammates_can_reply": false
+    },
+    "is_private": false,
+    "is_valid": true
+  },
+  {
+    "_links": {
+      "self": "https://custlo.api.frontapp.com/channels/cha_ogcrs",
+      "related": {
+        "inbox": "https://custlo.api.frontapp.com/inboxes/inb_lrgx4",
+        "owner": "https://custlo.api.frontapp.com/teams/tim_9lsrs"
+      }
+    },
+    "id": "cha_ogcrs",
+    "name": "petbundle",
+    "address": "bc0cb6b574342683_C084UPNJR5J",
+    "send_as": "bc0cb6b574342683_C084UPNJR5J",
+    "type": "custom",
+    "settings": {
+      "undo_send_time": 5,
+      "all_teammates_can_reply": true
+    },
+    "is_private": false,
+    "is_valid": true
+  },
+  {
+    "_links": {
+      "self": "https://custlo.api.frontapp.com/channels/cha_oqt48",
+      "related": {
+        "inbox": "https://custlo.api.frontapp.com/inboxes/inb_lrgx4",
+        "owner": "https://custlo.api.frontapp.com/teams/tim_9lsrs"
+      }
+    },
+    "id": "cha_oqt48",
+    "name": "cav.support",
+    "address": "cav.support@mandasadevelopment.com",
+    "send_as": "cav.support@mandasadevelopment.com",
+    "type": "gmail",
+    "settings": {
+      "undo_send_time": 10,
+      "all_teammates_can_reply": false
+    },
+    "is_private": false,
+    "is_valid": true
+  },
+  {
+    "_links": {
+      "self": "https://custlo.api.frontapp.com/channels/cha_obuzs",
+      "related": {
+        "inbox": "https://custlo.api.frontapp.com/inboxes/inb_lv25k",
+        "owner": "https://custlo.api.frontapp.com/teams/tim_9lsrs"
+      }
+    },
+    "id": "cha_obuzs",
+    "name": "support",
+    "address": "support@checkoutextensions.pro",
+    "send_as": "support@checkoutextensions.pro",
+    "type": "gmail",
+    "settings": {
+      "undo_send_time": 10,
+      "all_teammates_can_reply": false
+    },
+    "is_private": false,
+    "is_valid": true
+  },
+  {
+    "_links": {
+      "self": "https://custlo.api.frontapp.com/channels/cha_obv1k",
+      "related": {
+        "inbox": "https://custlo.api.frontapp.com/inboxes/inb_lv25k",
+        "owner": "https://custlo.api.frontapp.com/teams/tim_9lsrs"
+      }
+    },
+    "id": "cha_obv1k",
+    "name": "Checkout Extension",
+    "address": "5e965917aeeb8b170d0f",
+    "send_as": "5e965917aeeb8b170d0f",
+    "type": "front_chat",
+    "settings": {
+      "undo_send_time": 0,
+      "all_teammates_can_reply": false
+    },
+    "is_private": false,
+    "is_valid": true
+  },
+  {
+    "_links": {
+      "self": "https://custlo.api.frontapp.com/channels/cha_ovmqw",
+      "related": {
+        "inbox": "https://custlo.api.frontapp.com/inboxes/inb_mewo8",
+        "owner": "https://custlo.api.frontapp.com/teams/tim_9lsrs"
+      }
+    },
+    "id": "cha_ovmqw",
+    "name": "sunil",
+    "address": "sunil@passonext.com",
+    "send_as": "sunil@passonext.com",
+    "type": "gmail",
+    "settings": {
+      "undo_send_time": 10,
+      "all_teammates_can_reply": false
+    },
+    "is_private": false,
+    "is_valid": true
+  },
+  {
+    "_links": {
+      "self": "https://custlo.api.frontapp.com/channels/cha_oxe20",
+      "related": {
+        "inbox": "https://custlo.api.frontapp.com/inboxes/inb_mgt9k",
+        "owner": "https://custlo.api.frontapp.com/teams/tim_9lsrs"
+      }
+    },
+    "id": "cha_oxe20",
+    "name": "app-support",
+    "address": "app-support@mandasa.in",
+    "send_as": "app-support@mandasa.in",
+    "type": "gmail",
+    "settings": {
+      "undo_send_time": 10,
+      "all_teammates_can_reply": false
+    },
+    "is_private": false,
+    "is_valid": true
+  }
+]
