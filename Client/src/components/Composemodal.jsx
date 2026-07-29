@@ -478,7 +478,10 @@ export default function ComposeModal({
 
     const handleClose = () => {
         setMounted(false);
-        setTimeout(onClose, 200);
+        setTimeout(() => {
+            onClose();
+            if (setOpen) setOpen(false);
+        }, 200);
     };
 
     const handleBackdropClick = (e) => {
@@ -539,20 +542,30 @@ export default function ComposeModal({
         if (!validate()) return;
         setSending(true);
         try {
-            const payload = {
-                from: from.id, // channel id
-                to,
-                subject,
-                body,
-                attachments,
-            };
+            const formData = new FormData();
+            formData.append("from", from.id);
+            formData.append("subject", subject || "");
+            formData.append("body", body || "");
 
-            await Promise.all([
-                onSend(payload),
-                axios.post(`${API_URL}/api/send`, payload),
-            ]);
+            to.forEach((recipient) => {
+                formData.append("to[]", typeof recipient === "string" ? recipient : recipient.email);
+            });
+            cc.forEach((recipient) => {
+                formData.append("cc[]", typeof recipient === "string" ? recipient : recipient.email);
+            });
+            bcc.forEach((recipient) => {
+                formData.append("bcc[]", typeof recipient === "string" ? recipient : recipient.email);
+            });
+            attachments.forEach((file) => {
+                formData.append("attachments", file);
+            });
 
-            console.log("Sent:", payload);
+            await axios.post(`${API_URL}/api/send`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
             showToast("Message sent successfully");
             setTimeout(handleClose, 1800);
         } catch (err) {

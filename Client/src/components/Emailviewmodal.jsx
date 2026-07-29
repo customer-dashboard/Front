@@ -1,6 +1,35 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { API_URL } from "../../proxy";
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
+
+const parseEmailBody = (message) => {
+  if (!message || !message.body) return "";
+
+  const cidMap = {};
+  if (message.attachments) {
+    message.attachments.forEach((att) => {
+      if (att.metadata?.cid) {
+        cidMap[att.metadata.cid] = att.id;
+      }
+    });
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(message.body, "text/html");
+
+  doc.querySelectorAll("img").forEach((img) => {
+    const frontCid = img.getAttribute("front-cid");
+    const srcCid = img.getAttribute("src")?.replace(/^cid:/, "");
+    const cid = frontCid || srcCid;
+
+    if (cid && cidMap[cid]) {
+      img.src = `${API_URL}/api/attachments/${cidMap[cid]}`;
+    }
+  });
+
+  return doc.body.innerHTML;
+};
 
 const formatDate = (iso) => {
   if (!iso) return "";
@@ -374,8 +403,9 @@ const EmailMessage = ({ message, isLast, onReply, onReplyAll, onForward, default
   const [expanded, setExpanded] = useState(defaultExpanded ?? isLast);
   const [showDetails, setShowDetails] = useState(false);
 
-  const { from = {}, to = [], cc = [], date, body = "", subject } = message;
+  const { from = {}, to = [], cc = [], date, body = "", subject, attachments = [] } = message;
   const color = avatarColor(from.name || from.email || "");
+  const parsedBody = parseEmailBody(message);
 
   return (
     <div className={`bg-white rounded-xl border transition-all duration-150 ${expanded ? "border-gray-200 shadow-sm" : "border-transparent hover:border-gray-200 hover:shadow-sm"}`}>
@@ -441,8 +471,27 @@ const EmailMessage = ({ message, isLast, onReply, onReplyAll, onForward, default
       {expanded && (
         <div
           className="px-5 pb-5 text-sm text-gray-700 leading-relaxed email-body"
-          dangerouslySetInnerHTML={{ __html: body }}
+          dangerouslySetInnerHTML={{ __html: parsedBody }}
         />
+      )}
+
+      {/* Attachments */}
+      {expanded && attachments && attachments.length > 0 && (
+        <div className="px-5 pb-4 flex flex-wrap gap-2">
+          {attachments.map((att) => (
+            <a
+              key={att.id}
+              href={`${API_URL}/api/attachments/${att.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 text-xs text-gray-700 font-medium transition-colors"
+            >
+              <Ico d={I.attach} size={14} className="text-gray-400" />
+              <span className="truncate max-w-[200px]">{att.filename || att.name || "Attachment"}</span>
+              {att.size && <span className="text-gray-400">({(att.size / 1024).toFixed(1)} KB)</span>}
+            </a>
+          ))}
+        </div>
       )}
     </div>
   );
