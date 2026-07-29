@@ -7,7 +7,6 @@ app.use(cors());
 app.use(express.json());
 
 // Import routes and requests api
-import conversationRouter from "../routes/conversation.js";
 import conversationsRouter from "../routes/conversations.js";
 import channelsRouter from "../routes/channels.js";
 import contactsRouter from "../routes/contacts.js";
@@ -21,9 +20,6 @@ app.use("/api/reply", replyRouter);
 
 // Get all conversations
 app.use("/api/conversations", conversationsRouter);
-
-// pagination conversation
-app.use("/api/conversation", conversationRouter);
 
 // Get all channels
 app.use("/api/channels", channelsRouter);

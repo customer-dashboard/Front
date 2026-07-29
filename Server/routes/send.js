@@ -11,9 +11,11 @@ router.post("/", upload.array("attachments"), async (req, res) => {
   try {
     const { from, subject, body } = req.body;
 
-    const to = parseRecipients(req.body["to[]"] || req.body.to);
-    const cc = parseRecipients(req.body["cc[]"] || req.body.cc);
-    const bcc = parseRecipients(req.body["bcc[]"] || req.body.bcc);
+    const to = parseRecipients(req.body["to[]"] || req.body.to || req.body["to"]);
+    const cc = parseRecipients(req.body["cc[]"] || req.body.cc || req.body["cc"]);
+    const bcc = parseRecipients(req.body["bcc[]"] || req.body.bcc || req.body["bcc"]);
+
+    console.log("Sending email -> Channel:", from, "To:", to, "Cc:", cc, "Bcc:", bcc);
 
     const files = req.files || [];
 
@@ -49,23 +51,31 @@ router.post("/", upload.array("attachments"), async (req, res) => {
       return res.json(response.data);
     }
 
-    const response = await front.createMessage(
-      {
-        to,
-        subject,
-        body,
-        ...(cc.length && { cc }),
-        ...(bcc.length && { bcc }),
+    const payload = {
+      to,
+      ...(cc && cc.length > 0 ? { cc } : {}),
+      ...(bcc && bcc.length > 0 ? { bcc } : {}),
+      subject: subject || "",
+      body: body || "",
+      options: {
         should_add_default_signature: true,
       },
+    };
+
+    const response = await axios.post(
+      `https://api2.frontapp.com/channels/${from}/messages`,
+      payload,
       {
-        channel_id: from,
+        headers: {
+          Authorization: `Bearer ${process.env.FRONT_API_TOKEN}`,
+          "Content-Type": "application/json",
+        },
       }
     );
 
     res.json(response.data);
   } catch (err) {
-    console.error(err.response?.data || err.message);
+    console.error("Error sending message:", err.response?.data || err.message);
 
     res.status(500).json({
       success: false,

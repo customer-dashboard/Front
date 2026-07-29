@@ -227,7 +227,12 @@ const RecipientField = ({ label, recipients, onAdd, contacts, onRemove, placehol
                 value={inputVal}
                 onChange={(e) => setInputVal(e.target.value)}
                 onKeyDown={handleKey}
-                // onBlur={() => { setFocused(false); commit(inputVal); }}
+                onBlur={() => {
+                    setTimeout(() => {
+                        setFocused(false);
+                        commit(inputVal);
+                    }, 150);
+                }}
                 onFocus={() => setFocused(true)}
                 placeholder={recipients.length === 0 ? placeholder : ""}
                 className="flex-1 min-w-[120px] bg-transparent outline-none text-sm text-gray-800 placeholder:text-gray-400"
@@ -542,8 +547,9 @@ export default function ComposeModal({
         if (!validate()) return;
         setSending(true);
         try {
+            const channelId = typeof from === "object" ? from?.id : from;
             const formData = new FormData();
-            formData.append("from", from.id);
+            formData.append("from", channelId);
             formData.append("subject", subject || "");
             formData.append("body", body || "");
 

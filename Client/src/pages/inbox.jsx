@@ -49,11 +49,22 @@ function Inbox() {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const searchRef = useRef(null);
 
+    const [nextPageToken, setNextPageToken] = useState(null);
+    const [loadingMore, setLoadingMore] = useState(false);
+
     useEffect(() => {
         fetchContacts();
-        fetchConversations();
         fetchChannels();
     }, []);
+
+    // Debounced server-side search when searchQuery changes
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            fetchConversations(null, false, searchQuery);
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     // Click outside handler for search suggestions
     useEffect(() => {
@@ -75,10 +86,35 @@ function Inbox() {
         }
     };
 
-    const fetchConversations = async () => {
+    const fetchConversations = async (pageToken = null, append = false, query = searchQuery) => {
         try {
-            const response = await axios.get(`${API_URL}/api/conversations`);
-            setConversations(response.data);
+            let url = `${API_URL}/api/conversations?limit=50`;
+            if (pageToken) {
+                url += `&page_token=${pageToken}`;
+            }
+            if (query && query.trim()) {
+                url += `&q=${encodeURIComponent(query.trim())}`;
+            }
+            const response = await axios.get(url);
+
+            const fetchedConvs = response.data.conversations || (Array.isArray(response.data) ? response.data : []);
+
+            if (append) {
+                setConversations((prev) => [...prev, ...fetchedConvs]);
+            } else {
+                setConversations(fetchedConvs);
+            }
+
+            if (response.data.next) {
+                try {
+                    const token = new URL(response.data.next).searchParams.get("page_token");
+                    setNextPageToken(token);
+                } catch {
+                    setNextPageToken(null);
+                }
+            } else {
+                setNextPageToken(null);
+            }
         } catch (error) {
             console.error(error);
         }
@@ -157,34 +193,8 @@ function Inbox() {
         }
     };
 
-    // Filter conversations based on email, subject, or body content
-    const searchQueryLower = searchQuery.toLowerCase().trim();
-
-    const filteredConversations = conversations.filter((c) => {
-        if (!searchQueryLower) return true;
-
-        const subjectMatch = c.subject?.toLowerCase().includes(searchQueryLower);
-        const snippetMatch = c.snippet?.toLowerCase().includes(searchQueryLower) ||
-                             c.last_message?.body?.toLowerCase().includes(searchQueryLower) ||
-                             c.last_message?.text?.toLowerCase().includes(searchQueryLower);
-
-        const recipientMatch = c.recipient?.handle?.toLowerCase().includes(searchQueryLower) ||
-                              c.recipient?.name?.toLowerCase().includes(searchQueryLower);
-
-        const fromMatch = c.last_message?.from?.email?.toLowerCase().includes(searchQueryLower) ||
-                          c.last_message?.from?.handle?.toLowerCase().includes(searchQueryLower) ||
-                          c.last_message?.from?.name?.toLowerCase().includes(searchQueryLower);
-
-        const toMatch = Array.isArray(c.last_message?.to) && c.last_message.to.some((t) =>
-            t.email?.toLowerCase().includes(searchQueryLower) ||
-            t.handle?.toLowerCase().includes(searchQueryLower) ||
-            t.name?.toLowerCase().includes(searchQueryLower)
-        );
-
-        const rawMatch = JSON.stringify(c).toLowerCase().includes(searchQueryLower);
-
-        return subjectMatch || snippetMatch || recipientMatch || fromMatch || toMatch || rawMatch;
-    });
+    // Filter conversations: server handles query via q parameter when searching
+    const filteredConversations = conversations;
 
     const getSenderDisplay = (conv) => {
         return (
@@ -208,7 +218,6 @@ function Inbox() {
     return (
         <div className="min-h-screen bg-slate-50 text-slate-800 p-4 md:p-8">
             {/* Header bar */}
-            <Link to="/conversation">Go to conversation page</Link>
             <div className="max-w-6xl mx-auto mb-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80">
                     <div className="flex items-center gap-3">
@@ -243,6 +252,7 @@ function Inbox() {
                                         onClick={() => {
                                             setSearchQuery("");
                                             setShowSuggestions(false);
+                                            fetchConversations(null, false, "");
                                         }}
                                         className="absolute right-3 text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-200/60 transition-colors"
                                     >
@@ -297,6 +307,23 @@ function Inbox() {
                                                 </div>
                                             );
                                         })
+                                    )}
+                                    {nextPageToken && (
+                                        <div className="p-2.5 bg-slate-50 text-center border-t border-slate-100">
+                                            <button
+                                                type="button"
+                                                disabled={loadingMore}
+                                                onClick={async (e) => {
+                                                    e.stopPropagation();
+                                                    setLoadingMore(true);
+                                                    await fetchConversations(nextPageToken, true);
+                                                    setLoadingMore(false);
+                                                }}
+                                                className="text-xs text-blue-600 font-semibold hover:text-blue-700 transition-colors py-1 px-3 rounded-lg hover:bg-blue-50"
+                                            >
+                                                {loadingMore ? "Loading more..." : "Load more search results from server"}
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
                             )}
@@ -389,6 +416,23 @@ function Inbox() {
                                 </div>
                             );
                         })}
+                    </div>
+                )}
+
+                {nextPageToken && (
+                    <div className="p-4 text-center border-t border-slate-100 bg-slate-50/50">
+                        <button
+                            type="button"
+                            disabled={loadingMore}
+                            onClick={async () => {
+                                setLoadingMore(true);
+                                await fetchConversations(nextPageToken, true);
+                                setLoadingMore(false);
+                            }}
+                            className="px-5 py-2.5 bg-white hover:bg-slate-100 text-blue-600 font-semibold text-xs rounded-xl border border-slate-200 shadow-sm transition-all inline-flex items-center gap-2 disabled:opacity-50"
+                        >
+                            {loadingMore ? "Loading..." : "Load More Conversations"}
+                        </button>
                     </div>
                 )}
             </div>
