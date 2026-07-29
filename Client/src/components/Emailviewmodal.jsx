@@ -31,12 +31,18 @@ const parseEmailBody = (message) => {
   return doc.body.innerHTML;
 };
 
-const formatDate = (iso) => {
-  if (!iso) return "";
-  const d = new Date(iso);
+const formatDate = (timestamp) => {
+  if (!timestamp) return "";
+
+  const d = new Date(timestamp * 1000);
+
   return d.toLocaleString("en-US", {
-    weekday: "short", month: "short", day: "numeric",
-    hour: "numeric", minute: "2-digit", hour12: true,
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
   });
 };
 
@@ -403,9 +409,25 @@ const EmailMessage = ({ message, isLast, onReply, onReplyAll, onForward, default
   const [expanded, setExpanded] = useState(defaultExpanded ?? isLast);
   const [showDetails, setShowDetails] = useState(false);
 
-  const { from = {}, to = [], cc = [], date, body = "", subject, attachments = [] } = message;
-  const color = avatarColor(from.name || from.email || "");
+  const from = message.recipients.find((r) => r.role === "from")?.handle || "";
+
+const to = message.recipients
+  .filter((r) => r.role === "to")
+  .map((r) => r.handle);
+
+const cc = message.recipients
+  .filter((r) => r.role === "cc")
+  .map((r) => r.handle);
+
+const bcc = message.recipients
+  .filter((r) => r.role === "bcc")
+  .map((r) => r.handle);
+
+  const { created_at, body = "", subject, attachments = [] } = message;
+  const color = avatarColor(from || "");
   const parsedBody = parseEmailBody(message);
+
+  console.log("from", from);
 
   return (
     <div className={`bg-white rounded-xl border transition-all duration-150 ${expanded ? "border-gray-200 shadow-sm" : "border-transparent hover:border-gray-200 hover:shadow-sm"}`}>
@@ -416,13 +438,13 @@ const EmailMessage = ({ message, isLast, onReply, onReplyAll, onForward, default
       >
         {/* Avatar */}
         <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${color}`}>
-          {initials(from.name, from.email)}
+          {initials(from)}
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-sm font-semibold truncate">{from.name || from.email}</span>
-            <span className="text-xs text-gray-400 shrink-0 whitespace-nowrap">{formatDate(date)}</span>
+            <span className="text-sm font-semibold truncate">{from}</span>
+            <span className="text-xs text-gray-400 shrink-0 whitespace-nowrap">{formatDate(created_at)}</span>
           </div>
 
           {!expanded && (
@@ -459,10 +481,10 @@ const EmailMessage = ({ message, isLast, onReply, onReplyAll, onForward, default
       {/* Details dropdown */}
       {expanded && showDetails && (
         <div className="mx-5 mb-3 px-3 py-2.5 bg-white rounded-lg border border-gray-100 text-xs text-gray-600 space-y-1">
-          <div className="flex gap-2"><span className="text-gray-400 w-6">from</span><span>{from.name} &lt;{from.email}&gt;</span></div>
-          {to.length > 0 && <div className="flex gap-2"><span className="text-gray-400 w-6">to</span><span>{to.map(r => `${r.name} <${r.email}>`).join(", ")}</span></div>}
-          {cc.length > 0 && <div className="flex gap-2"><span className="text-gray-400 w-6">cc</span><span>{cc.map(r => `${r.name} <${r.email}>`).join(", ")}</span></div>}
-          <div className="flex gap-2"><span className="text-gray-400 w-6">date</span><span>{formatDate(date)}</span></div>
+          <div className="flex gap-2"><span className="text-gray-400 w-6">from</span><span>{from}</span></div>
+          {to.length > 0 && <div className="flex gap-2"><span className="text-gray-400 w-6">to</span><span>{to}</span></div>}
+          {cc.length > 0 && <div className="flex gap-2"><span className="text-gray-400 w-6">cc</span><span>{cc}</span></div>}
+          <div className="flex gap-2"><span className="text-gray-400 w-6">date</span><span>{formatDate(created_at)}</span></div>
           {subject && <div className="flex gap-2"><span className="text-gray-400 w-6">subj</span><span>{subject}</span></div>}
         </div>
       )}
