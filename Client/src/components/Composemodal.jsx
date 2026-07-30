@@ -121,28 +121,60 @@ const RecipientChip = ({ label, email, onRemove, hasError }) => (
 
 // ─── Recipient Field ──────────────────────────────────────────────────────────
 
-const RecipientField = ({ label, recipients, onAdd, contacts, onRemove, placeholder = "Add recipients" }) => {
+const RecipientField = ({ label, recipients, onAdd, contacts = [], onRemove, placeholder = "Add recipients" }) => {
     const [inputVal, setInputVal] = useState("");
     const [focused, setFocused] = useState(false);
     const [highlighted, setHighlighted] = useState(0);
+    const [searchResults, setSearchResults] = useState([]);
     const inputRef = useRef(null);
+
+    // Server-side debounced search for contacts across the entire account
+    useEffect(() => {
+        if (!inputVal.trim()) {
+            setSearchResults([]);
+            return;
+        }
+
+        const timer = setTimeout(async () => {
+            try {
+                const response = await axios.get(`${API_URL}/api/contacts?q=${encodeURIComponent(inputVal.trim())}`);
+                const fetched = response.data?.contacts || (Array.isArray(response.data) ? response.data : []);
+                setSearchResults(fetched);
+            } catch (err) {
+                console.error("Error searching contacts:", err);
+            }
+        }, 250);
+
+        return () => clearTimeout(timer);
+    }, [inputVal]);
+
+    // Combine local contacts & server search results, deduplicating by email
+    const combined = [...contacts, ...searchResults];
+    const seen = new Set();
+    const uniqueContacts = combined.filter((c) => {
+        if (!c.email) return false;
+        const key = c.email.toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
 
     const filteredContacts =
         inputVal.trim() === ""
             ? []
-            : contacts
+            : uniqueContacts
                 .filter((c) => {
                     const value = inputVal.toLowerCase();
 
                     const alreadyAdded = recipients.some(
-                        (r) => r.email === c.email
+                        (r) => r.email?.toLowerCase() === c.email?.toLowerCase()
                     );
 
                     return (
                         !alreadyAdded &&
                         (
-                            c.name.toLowerCase().includes(value) ||
-                            c.email.toLowerCase().includes(value)
+                            (c.name || "").toLowerCase().includes(value) ||
+                            (c.email || "").toLowerCase().includes(value)
                         )
                     );
                 })

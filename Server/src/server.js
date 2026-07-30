@@ -42,6 +42,47 @@ app.use("/api/contacts", contactsRouter);
 // Get all frond images
 app.use("/api/attachments/:attachmentId", attachmentsRouter);
 
+app.get("/api/shopify/install", async (req, res) => {
+    const { shop } = req.query;
+
+    console.log("Shop installed:", shop);
+
+    // Do whatever you need here
+    // e.g. create a contact, send an email, save the shop
+
+    res.json({
+        success: true,
+        shop,
+    });
+});
+
+app.post("/api/shopify/install", async (req, res) => {
+  try {
+    const { shop, email, shopName } = req.body;
+
+    console.log("Shop:", shop);
+    console.log("Email:", email);
+    console.log("Shop Name:", shopName);
+
+    res.status(200).json({
+      success: true,
+      message: "Installation data received successfully",
+      data: {
+        shop,
+        email,
+        shopName,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 // Diagnostic route
 app.get("/api/ping", (req, res) => res.json({ message: "pong" }));
 
@@ -49,7 +90,7 @@ app.get("/api/ping", (req, res) => res.json({ message: "pong" }));
 const clientDistPath = path.resolve(__dirname, "../../Client/dist");
 if (fs.existsSync(clientDistPath)) {
     app.use(express.static(clientDistPath));
- 
+
     // Catch all handler: send back React's index.html file for client-side routing
     app.use((req, res, next) => {
         if (req.path.startsWith("/api")) {
