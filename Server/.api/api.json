@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/api@7/schema.json",
+  "apis": [
+    {
+      "private": true,
+      "identifier": "front",
+      "source": "@front/v1.0.0#2l8sg4mrmc1rlb",
+      "integrity": "sha512-wa2OGmYsFTfyY9vuuN9V3+2r6QJ7e1nAN/MK0v0x2XKfwKI0NZTVCXk9L7fI3XhqqKPIZSLftGMXW2nVyGgT0A==",
+      "installerVersion": "7.0.0",
+      "language": "js",
+      "createdAt": "2026-07-27T12:02:37.111Z"
+    }
+  ]
+}
