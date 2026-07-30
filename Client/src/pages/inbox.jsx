@@ -52,11 +52,6 @@ function Inbox() {
     const [nextPageToken, setNextPageToken] = useState(null);
     const [loadingMore, setLoadingMore] = useState(false);
 
-    useEffect(() => {
-        fetchContacts();
-        fetchChannels();
-    }, []);
-
     // Debounced server-side search when searchQuery changes
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -77,15 +72,23 @@ function Inbox() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const fetchContacts = async () => {
-        try {
-            const res = await axios.get(`${API_URL}/api/contacts`);
-            setContacts(res.data);
-        } catch (err) {
-            console.error(err);
-        }
-    };
+    useEffect(() => {
+        const fetchInitialData = async () => {
+            try {
+                const [contactsRes, channelsRes] = await Promise.all([
+                    axios.get(`${API_URL}/api/contacts`),
+                    axios.get(`${API_URL}/api/channels`),
+                ]);
 
+                setContacts(contactsRes.data);
+                setChannels(channelsRes.data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchInitialData();
+    }, []);
     const fetchConversations = async (pageToken = null, append = false, query = searchQuery) => {
         try {
             let url = `${API_URL}/api/conversations?limit=50`;
@@ -117,15 +120,6 @@ function Inbox() {
             }
         } catch (error) {
             console.error(error);
-        }
-    };
-
-    const fetchChannels = async () => {
-        try {
-            const res = await axios.get(`${API_URL}/api/channels`);
-            setChannels(res.data);
-        } catch (err) {
-            console.error(err);
         }
     };
 
