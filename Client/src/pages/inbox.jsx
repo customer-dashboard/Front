@@ -80,7 +80,8 @@ function Inbox() {
                     axios.get(`${API_URL}/api/channels`),
                 ]);
 
-                setContacts(contactsRes.data);
+                const contactsData = contactsRes.data?.contacts || (Array.isArray(contactsRes.data) ? contactsRes.data : []);
+                setContacts(contactsData);
                 setChannels(channelsRes.data);
             } catch (err) {
                 console.error(err);

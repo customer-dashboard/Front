@@ -424,10 +424,23 @@ const EmailMessage = ({ message, isLast, onReply, onReplyAll, onForward, default
     .filter((r) => r.role === "bcc")
     .map((r) => r.handle);
 
+  const getPreviewText = (html = "") => {
+    return html
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+      .replace(/<[^>]+>/g, "")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/\s+/g, " ")
+      .trim();
+  };
+
   const { created_at, body = "", subject, attachments = [] } = message;
   const color = avatarColor(from || "");
   const parsedBody = parseEmailBody(message);
-  
+
   return (
     <div className={`bg-white rounded-xl border transition-all duration-150 ${expanded ? "border-gray-200 shadow-sm" : "border-transparent hover:border-gray-200 hover:shadow-sm"}`}>
       {/* Message header — always visible */}
@@ -438,10 +451,10 @@ const EmailMessage = ({ message, isLast, onReply, onReplyAll, onForward, default
         {/* Avatar */}
         <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden shrink-0 ${color}`}>
           {from === "support@custlo.com" ? (
-            <img src={Custlo} alt="Custlo" width="100%" height="100%" style={{ maxWidth: "100%", height: "auto", objectFit: "cover"}} />
-          ): (
-              initials(from)
-            )}
+            <img src={Custlo} alt="Custlo" width="100%" height="100%" style={{ maxWidth: "100%", height: "auto", objectFit: "cover" }} />
+          ) : (
+            initials(from)
+          )}
 
         </div>
 
@@ -453,7 +466,7 @@ const EmailMessage = ({ message, isLast, onReply, onReplyAll, onForward, default
 
           {!expanded && (
             <p className="text-xs text-gray-400 truncate mt-0.5">
-              {body.replace(/<[^>]*>/g, "").slice(0, 120)}
+              {getPreviewText(body).slice(0, 200)}
             </p>
           )}
 
@@ -588,7 +601,7 @@ export default function EmailViewModal({
     setReplyMode(null);
   };
 
-  console.log("messages", messages);
+  // console.log("messages", messages);
 
   if (!open) return null;
 
@@ -712,6 +725,8 @@ export default function EmailViewModal({
 
       {/* Email body scoped styles */}
       <style>{`
+        table { width: auto !important }
+        .email-body { overflow: hidden;}
         .email-body img { max-width: 100%; height: auto; }
         .email-body a   { color: #2563eb; text-decoration: underline; }
         .email-body ul  { padding-left: 1.25rem; list-style: disc; }
