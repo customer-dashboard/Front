@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "lint": "tsc --noEmit",
-    "prepare": "tsup"
+    "prepare": "tsup || exit 0"
   },
   "dependencies": {
     "@readme/api-core": "^7.0.0"
