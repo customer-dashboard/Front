@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { API_URL } from "../../proxy";
+import Custlo from "/Custlo.png"
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
 
@@ -55,7 +56,7 @@ const avatarColor = (str = "") => {
   const colors = [
     "bg-blue-100 text-blue-700", "bg-purple-100 text-purple-700",
     "bg-green-100 text-green-700", "bg-amber-100 text-amber-700",
-    "bg-rose-100 text-rose-700",  "bg-teal-100 text-teal-700",
+    "bg-rose-100 text-rose-700", "bg-teal-100 text-teal-700",
   ];
   let hash = 0;
   for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -73,33 +74,33 @@ const Ico = ({ d, size = 16, className = "" }) => (
 );
 
 const I = {
-  reply:    ["M9 17 4 12l5-5", "M20 18v-2a4 4 0 0 0-4-4H4"],
+  reply: ["M9 17 4 12l5-5", "M20 18v-2a4 4 0 0 0-4-4H4"],
   replyAll: ["M7 17 2 12l5-5", "M12 17 7 12l5-5", "M22 18v-2a4 4 0 0 0-4-4H7"],
-  forward:  ["M15 17l5-5-5-5", "M4 18v-2a4 4 0 0 0 4-4h9"],
-  close:    ["M18 6 6 18", "m6 6 12 12"],
-  x:        ["M18 6 6 18", "m6 6 12 12"],
-  expand:   ["M8 3H5a2 2 0 0 0-2 2v3","M21 8V5a2 2 0 0 0-2-2h-3","M3 16v3a2 2 0 0 0 2 2h3","M16 21h3a2 2 0 0 0 2-2v-3"],
+  forward: ["M15 17l5-5-5-5", "M4 18v-2a4 4 0 0 0 4-4h9"],
+  close: ["M18 6 6 18", "m6 6 12 12"],
+  x: ["M18 6 6 18", "m6 6 12 12"],
+  expand: ["M8 3H5a2 2 0 0 0-2 2v3", "M21 8V5a2 2 0 0 0-2-2h-3", "M3 16v3a2 2 0 0 0 2 2h3", "M16 21h3a2 2 0 0 0 2-2v-3"],
   minimize: "M5 12h14",
-  send:     ["M22 2 11 13", "M22 2 15 22 11 13 2 9l20-7z"],
-  attach:   "m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48",
-  link:     ["M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71","M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"],
-  emoji:    ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z","M8 14s1.5 2 4 2 4-2 4-2","M9 9h.01","M15 9h.01"],
-  more:     "M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2z",
-  trash:    ["M3 6h18","M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"],
-  bold:     ["M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z","M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"],
-  italic:   ["M19 4h-9","M14 20H5","M15 4 9 20"],
-  underline:["M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3","M4 21h16"],
-  list:     ["M8 6h13","M8 12h13","M8 18h13","M3 6h.01","M3 12h.01","M3 18h.01"],
-  undo:     ["M3 7v6h6","M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"],
-  redo:     ["M21 7v6h-6","M3 17a9 9 0 0 0 9-9 9 9 0 0 0 6 2.3L21 13"],
+  send: ["M22 2 11 13", "M22 2 15 22 11 13 2 9l20-7z"],
+  attach: "m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48",
+  link: ["M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71", "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"],
+  emoji: ["M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z", "M8 14s1.5 2 4 2 4-2 4-2", "M9 9h.01", "M15 9h.01"],
+  more: "M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2z",
+  trash: ["M3 6h18", "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"],
+  bold: ["M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z", "M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"],
+  italic: ["M19 4h-9", "M14 20H5", "M15 4 9 20"],
+  underline: ["M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3", "M4 21h16"],
+  list: ["M8 6h13", "M8 12h13", "M8 18h13", "M3 6h.01", "M3 12h.01", "M3 18h.01"],
+  undo: ["M3 7v6h6", "M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"],
+  redo: ["M21 7v6h-6", "M3 17a9 9 0 0 0 9-9 9 9 0 0 0 6 2.3L21 13"],
   chevDown: "M6 9l6 6 6-6",
-  nav:      ["M15 18l-6-6 6-6"],
-  navR:     ["M9 18l6-6-6-6"],
-  star:     "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
-  label:    ["M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z","M7 7h.01"],
-  archive:  ["M21 8v13H3V8","M1 3h22v5H1z","M10 12h4"],
-  print:    ["M6 9V2h12v7","M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2","M6 14h12v8H6z"],
-  spinner:  "M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83",
+  nav: ["M15 18l-6-6 6-6"],
+  navR: ["M9 18l6-6-6-6"],
+  star: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+  label: ["M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z", "M7 7h.01"],
+  archive: ["M21 8v13H3V8", "M1 3h22v5H1z", "M10 12h4"],
+  print: ["M6 9V2h12v7", "M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2", "M6 14h12v8H6z"],
+  spinner: "M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83",
 };
 
 // ─── RecipientChip ────────────────────────────────────────────────────────────
@@ -127,7 +128,7 @@ const RecipientField = ({ label, recipients, onAdd, onRemove }) => {
     if (!v) return;
     const match = v.match(/^(.+?)\s*<([^>]+)>$/);
     const email = match ? match[2].trim() : v;
-    const name  = match ? match[1].trim() : "";
+    const name = match ? match[1].trim() : "";
     onAdd({ email, name, error: !isValidEmail(email) });
     setVal("");
   };
@@ -141,7 +142,7 @@ const RecipientField = ({ label, recipients, onAdd, onRemove }) => {
       <input
         ref={ref} type="text" value={val}
         onChange={e => setVal(e.target.value)}
-        onKeyDown={e => { if (["Enter","Tab",","].includes(e.key)) { e.preventDefault(); commit(val); } if (e.key === "Backspace" && !val && recipients.length) onRemove(recipients.length - 1); }}
+        onKeyDown={e => { if (["Enter", "Tab", ","].includes(e.key)) { e.preventDefault(); commit(val); } if (e.key === "Backspace" && !val && recipients.length) onRemove(recipients.length - 1); }}
         onBlur={() => { setFocused(false); commit(val); }}
         onFocus={() => setFocused(true)}
         placeholder={recipients.length === 0 ? "Add recipients" : ""}
@@ -167,24 +168,24 @@ const MiniEditor = ({ value, onChange, placeholder = "Write a reply…", minHeig
       {/* Toolbar */}
       <div className="flex items-center gap-0.5 px-2 py-1 border-b border-gray-100">
         {[
-          { d: I.undo,      title: "Undo",      cmd: "undo" },
-          { d: I.redo,      title: "Redo",      cmd: "redo" },
+          { d: I.undo, title: "Undo", cmd: "undo" },
+          { d: I.redo, title: "Redo", cmd: "redo" },
           null,
-          { d: I.bold,      title: "Bold",      cmd: "bold" },
-          { d: I.italic,    title: "Italic",    cmd: "italic" },
+          { d: I.bold, title: "Bold", cmd: "bold" },
+          { d: I.italic, title: "Italic", cmd: "italic" },
           { d: I.underline, title: "Underline", cmd: "underline" },
           null,
-          { d: I.list,      title: "List",      cmd: "insertUnorderedList" },
-          { d: I.link,      title: "Link",      cmd: null, fn: () => { const u = prompt("URL:"); if (u) exec("createLink", u); } },
-          { d: I.emoji,     title: "Emoji",     cmd: null, fn: () => exec("insertText", "😊") },
+          { d: I.list, title: "List", cmd: "insertUnorderedList" },
+          { d: I.link, title: "Link", cmd: null, fn: () => { const u = prompt("URL:"); if (u) exec("createLink", u); } },
+          { d: I.emoji, title: "Emoji", cmd: null, fn: () => exec("insertText", "😊") },
         ].map((btn, i) =>
           btn === null
             ? <div key={i} className="w-px h-3.5 bg-gray-200 mx-0.5" />
             : <button key={i} type="button" title={btn.title}
-                onClick={() => btn.fn ? btn.fn() : exec(btn.cmd)}
-                className="p-1.5 rounded text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
-                <Ico d={btn.d} size={13} />
-              </button>
+              onClick={() => btn.fn ? btn.fn() : exec(btn.cmd)}
+              className="p-1.5 rounded text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+              <Ico d={btn.d} size={13} />
+            </button>
         )}
       </div>
       {/* Content editable */}
@@ -219,19 +220,19 @@ const ReplyCompose = ({
   onClose,
   onExpand,             // promote to full ComposeModal
 }) => {
-  const [to,      setTo]      = useState(() => {
+  const [to, setTo] = useState(() => {
     if (mode === "forward") return [];
     const sender = originalMessage?.from;
     return sender ? [{ email: sender.email, name: sender.name || "", error: false }] : [];
   });
-  const [cc,      setCc]      = useState(mode === "replyAll" ? (originalMessage?.cc || []) : []);
-  const [showCc,  setShowCc]  = useState(mode === "replyAll" && (originalMessage?.cc?.length > 0));
+  const [cc, setCc] = useState(mode === "replyAll" ? (originalMessage?.cc || []) : []);
+  const [showCc, setShowCc] = useState(mode === "replyAll" && (originalMessage?.cc?.length > 0));
   const [subject, setSubject] = useState(() => {
     const s = originalMessage?.subject || "";
     if (mode === "forward") return `Fwd: ${s}`;
     return s.startsWith("Re:") ? s : `Re: ${s}`;
   });
-  const [body,    setBody]    = useState("");
+  const [body, setBody] = useState("");
   const [attachments, setAttachments] = useState([]);
   const [sending, setSending] = useState(false);
   const [minimized, setMinimized] = useState(false);
@@ -411,24 +412,22 @@ const EmailMessage = ({ message, isLast, onReply, onReplyAll, onForward, default
 
   const from = message.recipients.find((r) => r.role === "from")?.handle || "";
 
-const to = message.recipients
-  .filter((r) => r.role === "to")
-  .map((r) => r.handle);
+  const to = message.recipients
+    .filter((r) => r.role === "to")
+    .map((r) => r.handle);
 
-const cc = message.recipients
-  .filter((r) => r.role === "cc")
-  .map((r) => r.handle);
+  const cc = message.recipients
+    .filter((r) => r.role === "cc")
+    .map((r) => r.handle);
 
-const bcc = message.recipients
-  .filter((r) => r.role === "bcc")
-  .map((r) => r.handle);
+  const bcc = message.recipients
+    .filter((r) => r.role === "bcc")
+    .map((r) => r.handle);
 
   const { created_at, body = "", subject, attachments = [] } = message;
   const color = avatarColor(from || "");
   const parsedBody = parseEmailBody(message);
-
-  console.log("from", from);
-
+  
   return (
     <div className={`bg-white rounded-xl border transition-all duration-150 ${expanded ? "border-gray-200 shadow-sm" : "border-transparent hover:border-gray-200 hover:shadow-sm"}`}>
       {/* Message header — always visible */}
@@ -437,8 +436,13 @@ const bcc = message.recipients
         onClick={() => setExpanded(e => !e)}
       >
         {/* Avatar */}
-        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${color}`}>
-          {initials(from)}
+        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden shrink-0 ${color}`}>
+          {from === "support@custlo.com" ? (
+            <img src={Custlo} alt="Custlo" width="100%" height="100%" style={{ maxWidth: "100%", height: "auto", objectFit: "cover"}} />
+          ): (
+              initials(from)
+            )}
+
         </div>
 
         <div className="flex-1 min-w-0">
@@ -540,7 +544,7 @@ const bcc = message.recipients
  */
 export default function EmailViewModal({
   open,
-  onClose = () => {},
+  onClose = () => { },
   messages = [],
   subject = "(No subject)",
   senderAccounts,
@@ -552,10 +556,10 @@ export default function EmailViewModal({
   totalCount = 0,
   currentIndex = 0,
 }) {
-  const [replyMode, setReplyMode]   = useState(null); // null | "reply" | "replyAll" | "forward"
-  const [mounted,   setMounted]     = useState(false);
+  const [replyMode, setReplyMode] = useState(null); // null | "reply" | "replyAll" | "forward"
+  const [mounted, setMounted] = useState(false);
   const backdropRef = useRef(null);
-  const bottomRef   = useRef(null);
+  const bottomRef = useRef(null);
 
   useEffect(() => {
     if (open) requestAnimationFrame(() => setMounted(true));
@@ -650,7 +654,7 @@ export default function EmailViewModal({
 
         {/* ── Subject ── */}
         <div className="px-6 pt-5 pb-3 bg-white border-b border-gray-100 shrink-0">
-          <h1 style={{color: "#000", fontSize: "22px", margin: "0px"}} className="text-xl font-semibold leading-snug">{subject || messages[0]?.subject || "(No subject)"}</h1>
+          <h1 style={{ color: "#000", fontSize: "22px", margin: "0px" }} className="text-xl font-semibold leading-snug">{subject || messages[0]?.subject || "(No subject)"}</h1>
           <p className="text-xs text-gray-400 mt-1">{messages.length} message{messages.length !== 1 ? "s" : ""} in this thread</p>
         </div>
 
