@@ -31,10 +31,6 @@ router.post("/", upload.array("attachments"), async (req, res) => {
 
       if (subject) form.append("subject", subject);
 
-      if (archive === "true" || archive === true) {
-        form.append("options[archive]", "true");
-      }
-
       to.forEach((email) => form.append("to[]", email));
       cc.forEach((email) => form.append("cc[]", email));
       bcc.forEach((email) => form.append("bcc[]", email));
@@ -67,8 +63,10 @@ router.post("/", upload.array("attachments"), async (req, res) => {
         ...(cc.length && { cc }),
         ...(bcc.length && { bcc }),
         ...(subject && { subject }),
+        author_id: "tea_oymlk",
         options: {
-          archive: archive === "true" || archive === true,
+          archive: false,             // Keep conversation open
+          tag_ids: ["tag_6t8tuw", "tag_6t8t7s"],    // Replace with your Awaiting tag ID
         },
       },
       {

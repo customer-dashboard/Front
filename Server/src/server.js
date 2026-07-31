@@ -3,6 +3,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import front from "../config/front.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,8 +15,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api", (req, res, next) => {
-    // console.log(`[API Request] ${req.method} ${req.originalUrl}`);
-    next();
+  // console.log(`[API Request] ${req.method} ${req.originalUrl}`);
+  next();
 });
 
 // Import routes and requests api
@@ -25,6 +26,7 @@ import contactsRouter from "../routes/contacts.js";
 import attachmentsRouter from "../routes/attachments.js";
 import sendRouter from "../routes/send.js";
 import replyRouter from "../routes/reply.js";
+import shopifyInstallRouter from "../routes/shopifyIntall.js";
 
 // Reply and send messages
 app.use("/api/send", sendRouter);
@@ -42,46 +44,7 @@ app.use("/api/contacts", contactsRouter);
 // Get all frond images
 app.use("/api/attachments/:attachmentId", attachmentsRouter);
 
-app.get("/api/shopify/install", async (req, res) => {
-    const { shop } = req.query;
-
-    console.log("Shop installed:", shop);
-
-    // Do whatever you need here
-    // e.g. create a contact, send an email, save the shop
-
-    res.json({
-        success: true,
-        shop,
-    });
-});
-
-app.post("/api/shopify/install", async (req, res) => {
-  try {
-    const { shop, email, shopName } = req.body;
-
-    console.log("Shop:", shop);
-    console.log("Email:", email);
-    console.log("Shop Name:", shopName);
-
-    res.status(200).json({
-      success: true,
-      message: "Installation data received successfully",
-      data: {
-        shop,
-        email,
-        shopName,
-      },
-    });
-  } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-});
+app.use("/api/shopify/install", shopifyInstallRouter);
 
 // Diagnostic route
 app.get("/api/ping", (req, res) => res.json({ message: "pong" }));
@@ -89,21 +52,21 @@ app.get("/api/ping", (req, res) => res.json({ message: "pong" }));
 // Serve static files from the React app build directory
 const clientDistPath = path.resolve(__dirname, "../../Client/dist");
 if (fs.existsSync(clientDistPath)) {
-    app.use(express.static(clientDistPath));
+  app.use(express.static(clientDistPath));
 
-    // Catch all handler: send back React's index.html file for client-side routing
-    app.use((req, res, next) => {
-        if (req.path.startsWith("/api")) {
-            return next();
-        }
-        res.sendFile(path.join(clientDistPath, "index.html"));
-    });
+  // Catch all handler: send back React's index.html file for client-side routing
+  app.use((req, res, next) => {
+    if (req.path.startsWith("/api")) {
+      return next();
+    }
+    res.sendFile(path.join(clientDistPath, "index.html"));
+  });
 } else {
-    app.get("/", (req, res) => {
-        res.json({ message: "Server is running 🚀" });
-    });
+  app.get("/", (req, res) => {
+    res.json({ message: "Server is running 🚀" });
+  });
 }
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Backend is working on ${PORT}`);
+  console.log(`Backend is working on ${PORT}`);
 });

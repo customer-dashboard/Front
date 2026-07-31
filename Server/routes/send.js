@@ -57,8 +57,11 @@ router.post("/", upload.array("attachments"), async (req, res) => {
       ...(bcc && bcc.length > 0 ? { bcc } : {}),
       subject: subject || "",
       body: body || "",
+      should_add_default_signature: true,
+      author_id: "tea_oymlk",
       options: {
-        should_add_default_signature: true,
+        archive: false,             // Keep conversation open
+        tag_ids: ["tag_6t8tuw", "tag_6t8t7s"],    // Replace with your Awaiting tag ID
       },
     };
 
