@@ -3,6 +3,8 @@ import axios from "axios";
 import FormData from "form-data";
 import upload from "../middleware/upload.js";
 import front from "../config/front.js";
+import dotenv from "dotenv";
+dotenv.config();
 import parseRecipients from "../utils/parseRecipients.js";
 
 const router = express.Router();
@@ -58,10 +60,14 @@ router.post("/", upload.array("attachments"), async (req, res) => {
       subject: subject || "",
       body: body || "",
       should_add_default_signature: true,
-      author_id: "tea_oymlk",
+      author_id: process.env.FRONT_AUTHOR_ID,
       options: {
-        archive: false,             // Keep conversation open
-        tag_ids: ["tag_6t8tuw", "tag_6t8t7s"],    // Replace with your Awaiting tag ID
+        archive: false,
+        tag_ids: [
+          process.env.FRONT_OPEN_TAG_ID,
+          process.env.FRONT_AWAITING_TAG_ID,
+        ],
+        // Keep conversation open  // Replace with your Awaiting tag ID
       },
     };
 

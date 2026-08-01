@@ -348,7 +348,7 @@ function Inbox() {
                 />
             )}
 
-            <InstallTemplatePage />
+            {/* <InstallTemplatePage /> */}
 
             {/* Conversations List View */}
             <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
