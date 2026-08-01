@@ -1,72 +1,84 @@
 import express from "express";
+import axios from "axios";
+import dotenv from "dotenv";
 import front from "../config/front.js";
+
+dotenv.config();
 
 const router = express.Router();
 
+const requiredEnv = [
+    "FRONT_API_TOKEN",
+    "FRONT_AUTHOR_ID",
+    "FRONT_AWAITING_TAG_ID",
+    "FRONT_OPEN_TAG_ID",
+    "FRONT_TEMPLATE_ID",
+];
+
+for (const key of requiredEnv) {
+    if (!process.env[key]) {
+        throw new Error(`Missing environment variable: ${key}`);
+    }
+}
+
 router.post("/api/shopify/install", async (req, res) => {
     try {
-        const { shop, email, shopName } = req.body;
+        const { email, shopName } = req.body;
 
-        console.log("Shop:", shop, "Email:", email, "Shop Name:", shopName);
+        // Get template from Front
+        const { data: template } = await front.getMessageTemplate({
+            message_template_id: process.env.FRONT_TEMPLATE_ID,
+        });
 
-        const { data } = await front.createMessage(
+        // Replace variables
+        const subject = template.subject;
+
+        const body = template.body.replaceAll(
+            "{{shop_name}}",
+            shopName
+        );
+
+        // Send email using Create Message API
+        const { data } = await axios.post(
+            `https://api2.frontapp.com/channels/${process.env.FRONT_CHANNEL_ID}/messages`,
             {
-                author_id: "tea_oymlk",
+                author_id: process.env.FRONT_AUTHOR_ID,
+
                 to: [email],
-                cc: [],
-                bcc: [],
-                sender_name: "Custlo Support",
-                subject: "[TEST] Welcome to Custlo",
-                body: `<p>Thank you for installing the Custlo app. Testing webhook api</p>`,
+
+                subject,
+                body,
+
                 should_add_default_signature: true,
+
                 options: {
-                    archive: false,             // Keep conversation open
-                    tag_ids: ["tag_6t8tuw", "tag_6t8t7s"],    // Replace with your Awaiting tag ID
+                    archive: false,
+                    tag_ids: [
+                        process.env.FRONT_OPEN_TAG_ID,
+                        process.env.FRONT_AWAITING_TAG_ID,
+                    ],
                 },
             },
             {
-                channel_id: "cha_o89uw",
+                headers: {
+                    Authorization: `Bearer ${process.env.FRONT_API_TOKEN}`,
+                    "Content-Type": "application/json",
+                },
             }
         );
 
         console.log("Front Response:", data);
 
-        const conversationUrl = data._links.related.conversation;
-
-        const conversationId = conversationUrl.split("/").pop();
-
-        console.log("conversationId", conversationId);
-        console.log("conversationUrl", conversationUrl);
-
-        await front.updateConversation(
-            {
-                status: "open",
-            },
-            {
-                conversation_id: conversationId,
-            }
-        );
-
-        const { data: conversation } = await front.getConversation({
-            conversation_id: conversationId,
-        });
-
-        console.log("Conversation Status:", conversation.status);
-        console.log("Conversation Inbox:", conversation.inbox);
-        console.log("Conversation Tags:", conversation.tags);
-        console.log(conversation);
-
         res.status(200).json({
             success: true,
-            message: "Email sent successfully.",
             data,
         });
     } catch (error) {
-        console.error("Front Error:", error.response?.data || error.message);
+        console.error(error.response?.data || error);
 
         res.status(500).json({
             success: false,
-            message: error.response?.data || error.message,
+            error: error.response?.data || error.message,
         });
     }
 });

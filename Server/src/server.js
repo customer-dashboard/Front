@@ -27,6 +27,7 @@ import attachmentsRouter from "../routes/attachments.js";
 import sendRouter from "../routes/send.js";
 import replyRouter from "../routes/reply.js";
 import shopifyInstallRouter from "../routes/shopifyIntall.js";
+import installTemplate from "../routes/installTemplate.js";
 
 // Reply and send messages
 app.use("/api/send", sendRouter);
@@ -44,7 +45,11 @@ app.use("/api/contacts", contactsRouter);
 // Get all frond images
 app.use("/api/attachments/:attachmentId", attachmentsRouter);
 
-app.use("/api/shopify/install", shopifyInstallRouter);
+// Shopify app install webhook
+app.use(shopifyInstallRouter);
+
+// Install template post request.
+app.use("/api/install-template", installTemplate);
 
 // Diagnostic route
 app.get("/api/ping", (req, res) => res.json({ message: "pong" }));
