@@ -20,4 +20,4 @@ jobs:
       - name: Deploy to Fly.io
         run: flyctl deploy --remote-only
         env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          FLY_API_TOKEN: FlyV1 fm2_lJPECAAAAAAAAGXdxBCnY8ub6AgGfNBj87ZB75anwrVodHRwczovL2FwaS5mbHkuaW8vdjGWAJLOAAEnHR8Lk7lodHRwczovL2FwaS5mbHkuaW8vYWFhL3YxxDxHnl4Xcj+EzdkKbqbLqbttBDvdm2cd1vNMSUtrAMbq428dzhs64GQUgt9eN8p3ETegm6bYZVwFdqQP5G3ETrtZCiSC8+U+El3Ws97HoPsNqNSjIOvH2miPsJjfiE2tc/nl1WO63/VbEHxSQw+LtkXp3TaU1jhRTaPpmGxszdOqTpCi+Qq+RHk53rnjPg2SlAORgc4BWYJ2HwWRgqdidWlsZGVyH6J3Zx8BxCDkSg3aUCYw8ZcVaXHQh4QiSozE85giKem1UUrqwyjr4A==,fm2_lJPETrtZCiSC8+U+El3Ws97HoPsNqNSjIOvH2miPsJjfiE2tc/nl1WO63/VbEHxSQw+LtkXp3TaU1jhRTaPpmGxszdOqTpCi+Qq+RHk53rnjPsQQ4jteUAZcvn2n0YxczQwstMO5aHR0cHM6Ly9hcGkuZmx5LmlvL2FhYS92MZgEks5qlVAVzpAtVjMXzgABCkAKkc4AAQpADMQQ7+OhMolzHF/vcE45zB9f4cQgIvnnRJXR9WNqewqGHR4LkpXs7YDyeJfjbZSqZ+CflFo=
