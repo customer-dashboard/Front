@@ -1,1 +1,1 @@
-export const API_URL = "https://front-dashboard.fly.dev";
+export const API_URL = import.meta.env.VITE_API_URL;
