@@ -220,7 +220,7 @@ function Inbox() {
                         <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/20">
                             <MailIcon />
                         </div>
-                        <h1 className="text-xl font-bold text-slate-900 tracking-tight">Inbox</h1>
+                        <h1 className="custom_heading text-xl font-bold text-slate-900 tracking-tight">Inbox</h1>
                     </div>
 
                     {/* Search & Compose container */}
